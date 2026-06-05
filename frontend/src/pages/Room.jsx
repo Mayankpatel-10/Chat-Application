@@ -8,6 +8,7 @@ import { Input } from '../components/ui/Input';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export function Room() {
+  const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
   const { roomId } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
@@ -95,7 +96,7 @@ export function Room() {
     try {
       const formData = new FormData();
       formData.append('file', file);
-      const res = await fetch(`http://localhost:8000/api/upload/${roomId}`, {
+      const res = await fetch(`${apiUrl}/api/upload/${roomId}`, {
         method: 'POST',
         body: formData
       });

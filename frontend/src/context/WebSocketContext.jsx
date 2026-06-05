@@ -16,8 +16,8 @@ export function WebSocketProvider({ children }) {
   const connect = (room, name) => {
     setRoomId(room);
     setUserName(name);
-    
-    const wsUrl = `ws://localhost:8000/ws/${room}/${clientId}`;
+    const wsBaseUrl = import.meta.env.VITE_WS_URL || 'ws://localhost:8000';
+    const wsUrl = `${wsBaseUrl}/ws/${room}/${clientId}`;
     const ws = new WebSocket(wsUrl);
 
     ws.onopen = () => {

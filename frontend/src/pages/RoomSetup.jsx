@@ -17,6 +17,7 @@ const generateRandomName = () => {
 };
 
 export function RoomSetup() {
+  const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
   const [roomId, setRoomId] = useState('');
   const [isCreating, setIsCreating] = useState(false);
   const [error, setError] = useState('');
@@ -26,7 +27,7 @@ export function RoomSetup() {
     setIsCreating(true);
     setError('');
     try {
-      const res = await fetch('http://localhost:8000/api/rooms', { 
+      const res = await fetch(`${apiUrl}/api/rooms`, { 
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ room_id: roomId || null })
@@ -48,7 +49,7 @@ export function RoomSetup() {
     e.preventDefault();
     if (!roomId) return;
     try {
-      const res = await fetch(`http://localhost:8000/api/rooms/${roomId}`);
+      const res = await fetch(`${apiUrl}/api/rooms/${roomId}`);
       if (res.ok) {
         navigate(`/room/${roomId}`, { state: { userName: generateRandomName() } });
       } else {
