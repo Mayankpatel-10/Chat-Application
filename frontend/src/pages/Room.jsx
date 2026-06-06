@@ -117,6 +117,7 @@ export function Room() {
   };
 
   const hasActiveCalls = Object.keys(peers).length > 0 || (localStream && !isVideoOff);
+  const totalVideos = (localStream ? 1 : 0) + Object.keys(peers).length;
 
   return (
     <>
@@ -247,10 +248,11 @@ export function Room() {
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: 'auto', opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
-                className="shrink-0 bg-bg-secondary/30 border-b border-white/5 p-4 flex gap-4 overflow-x-auto scrollbar-hide shadow-inner"
+                className={`shrink-0 bg-black/40 backdrop-blur-md border-b border-white/5 p-4 shadow-inner max-h-[60vh] overflow-y-auto w-full ${totalVideos === 1 ? 'flex justify-center' : 'grid gap-4'}`}
+                style={totalVideos > 1 ? { gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))' } : {}}
               >
                 {localStream && (
-                  <div className="relative w-48 aspect-video bg-black rounded-xl overflow-hidden border border-white/10 shrink-0 shadow-lg group">
+                  <div className={`relative aspect-video bg-black rounded-xl overflow-hidden border border-white/10 shadow-[0_0_20px_rgba(0,0,0,0.5)] group ${totalVideos === 1 ? 'w-full max-w-3xl max-h-[50vh]' : 'w-full'}`}>
                     <video 
                       ref={localVideoRef} 
                       autoPlay 
@@ -260,18 +262,18 @@ export function Room() {
                     />
                     {isVideoOff && (
                       <div className="absolute inset-0 flex flex-col items-center justify-center bg-bg-secondary">
-                        <div className="w-12 h-12 rounded-full bg-card flex items-center justify-center text-highlight font-bold text-lg mb-2 shadow-inner">
+                        <div className="w-16 h-16 rounded-full bg-card flex items-center justify-center text-highlight font-bold text-2xl mb-2 shadow-inner">
                           {userName.substring(0, 2).toUpperCase()}
                         </div>
                       </div>
                     )}
-                    <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between">
-                      <div className="bg-background/80 px-2 py-0.5 rounded text-[11px] backdrop-blur-md text-white font-semibold truncate max-w-[100px] border border-white/10">
+                    <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between">
+                      <div className="bg-background/80 px-3 py-1 rounded-md text-[13px] backdrop-blur-md text-white font-bold truncate max-w-[150px] border border-white/10 shadow-sm">
                         {userName} (You)
                       </div>
                       {(isMuted || isVideoOff) && (
-                        <div className="flex gap-1">
-                          {isMuted && <div className="bg-error/90 p-1 rounded-full"><MicOff className="w-3 h-3 text-white" /></div>}
+                        <div className="flex gap-2">
+                          {isMuted && <div className="bg-error/90 p-1.5 rounded-full shadow-sm"><MicOff className="w-4 h-4 text-white" /></div>}
                         </div>
                       )}
                     </div>
@@ -285,10 +287,10 @@ export function Room() {
                       initial={{ opacity: 0, scale: 0.8 }}
                       animate={{ opacity: 1, scale: 1 }}
                       key={id} 
-                      className="relative w-48 aspect-video bg-black rounded-xl overflow-hidden border border-white/10 shrink-0 shadow-lg"
+                      className={`relative aspect-video bg-black rounded-xl overflow-hidden border border-white/10 shadow-[0_0_20px_rgba(0,0,0,0.5)] group ${totalVideos === 1 ? 'w-full max-w-3xl max-h-[50vh]' : 'w-full'}`}
                     >
                       <VideoPlayer stream={peer.stream} />
-                      <div className="absolute bottom-2 left-2 bg-background/80 px-2 py-0.5 rounded text-[11px] backdrop-blur-md text-white font-semibold truncate max-w-[120px] border border-white/10">
+                      <div className="absolute bottom-3 left-3 bg-background/80 px-3 py-1 rounded-md text-[13px] backdrop-blur-md text-white font-bold truncate max-w-[200px] border border-white/10 shadow-sm">
                         {uName}
                       </div>
                     </motion.div>
