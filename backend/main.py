@@ -1,5 +1,5 @@
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException, UploadFile, File
-from fastapi.responses import Response
+from fastapi.responses import Response, FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional
@@ -63,7 +63,11 @@ async def get_file(room_id: str, file_id: str):
     if not file_data:
         raise HTTPException(status_code=404, detail="File not found")
     
-    return Response(content=file_data["content"], media_type=file_data["content_type"])
+    return FileResponse(
+        path=file_data["file_path"],
+        media_type=file_data["content_type"],
+        filename=file_data["file_name"]
+    )
 
 class ConnectionManager:
     def __init__(self):

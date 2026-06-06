@@ -1,5 +1,6 @@
 import uuid
 from typing import Dict, List, Set, Optional
+import os
 from pydantic import BaseModel
 import time
 
@@ -21,6 +22,7 @@ class RoomManager:
         self.room_messages: Dict[str, List[Message]] = {}
         self.room_users: Dict[str, Dict[str, dict]] = {}
         self.room_files: Dict[str, Dict[str, dict]] = {}
+        os.makedirs("uploads", exist_ok=True)
 
     def create_room(self, custom_room_id: Optional[str] = None) -> str:
         room_id = custom_room_id if custom_room_id else str(uuid.uuid4())[:8]
@@ -67,10 +69,15 @@ class RoomManager:
         if room_id not in self.room_files:
             self.room_files[room_id] = {}
         file_id = str(uuid.uuid4())
+        
+        file_path = os.path.join("uploads", f"{room_id}_{file_id}")
+        with open(file_path, "wb") as f:
+            f.write(content)
+            
         self.room_files[room_id][file_id] = {
             "file_name": file_name,
             "content_type": content_type,
-            "content": content
+            "file_path": file_path
         }
         return file_id
 
@@ -87,6 +94,12 @@ class RoomManager:
             if r in self.room_clients: del self.room_clients[r]
             if r in self.room_messages: del self.room_messages[r]
             if r in self.room_users: del self.room_users[r]
-            if r in self.room_files: del self.room_files[r]
+            if r in self.room_files:
+                for f_id, f_data in self.room_files[r].items():
+                    try:
+                        os.remove(f_data["file_path"])
+                    except:
+                        pass
+                del self.room_files[r]
 
 room_manager = RoomManager()

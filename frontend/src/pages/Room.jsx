@@ -411,9 +411,6 @@ export function Room() {
                   <Button type="button" variant="ghost" onClick={() => handleAttachmentSelect('audio/*')} className="justify-start gap-3 w-full hover:bg-white/5 text-white">
                     <Music className="w-4 h-4 text-warning" /> Audio
                   </Button>
-                  <Button type="button" variant="ghost" onClick={() => handleAttachmentSelect('.pdf,.doc,.docx,.txt,.csv')} className="justify-start gap-3 w-full hover:bg-white/5 text-white">
-                    <FileText className="w-4 h-4 text-highlight-soft" /> Document
-                  </Button>
                 </motion.div>
               )}
             </AnimatePresence>
