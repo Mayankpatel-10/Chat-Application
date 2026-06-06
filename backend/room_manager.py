@@ -86,20 +86,24 @@ class RoomManager:
             return self.room_files[room_id].get(file_id)
         return None
 
+    def destroy_room(self, room_id: str):
+        if room_id in self.rooms:
+            del self.rooms[room_id]
+        if room_id in self.room_clients: del self.room_clients[room_id]
+        if room_id in self.room_messages: del self.room_messages[room_id]
+        if room_id in self.room_users: del self.room_users[room_id]
+        if room_id in self.room_files:
+            for f_id, f_data in self.room_files[room_id].items():
+                try:
+                    os.remove(f_data["file_path"])
+                except:
+                    pass
+            del self.room_files[room_id]
+
     def clean_expired_rooms(self):
         current_time = time.time()
         expired_rooms = [r for r, expiry in self.rooms.items() if current_time > expiry]
         for r in expired_rooms:
-            del self.rooms[r]
-            if r in self.room_clients: del self.room_clients[r]
-            if r in self.room_messages: del self.room_messages[r]
-            if r in self.room_users: del self.room_users[r]
-            if r in self.room_files:
-                for f_id, f_data in self.room_files[r].items():
-                    try:
-                        os.remove(f_data["file_path"])
-                    except:
-                        pass
-                del self.room_files[r]
+            self.destroy_room(r)
 
 room_manager = RoomManager()

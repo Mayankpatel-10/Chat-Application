@@ -198,3 +198,6 @@ async def websocket_endpoint(websocket: WebSocket, room_id: str, client_id: str)
             "client_id": client_id,
             "message": leave_msg.dict()
         }))
+        
+        if len(room_manager.room_clients.get(room_id, set())) == 0:
+            room_manager.destroy_room(room_id)
