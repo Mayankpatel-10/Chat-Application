@@ -6,6 +6,7 @@ from typing import Optional
 import json
 import time
 import uuid
+import asyncio
 from room_manager import room_manager, Message
 
 app = FastAPI(title="Ephemeral API")
@@ -200,4 +201,9 @@ async def websocket_endpoint(websocket: WebSocket, room_id: str, client_id: str)
         }))
         
         if len(room_manager.room_clients.get(room_id, set())) == 0:
-            room_manager.destroy_room(room_id)
+            async def delayed_destroy():
+                await asyncio.sleep(10)
+                if room_manager.room_exists(room_id) and len(room_manager.room_clients.get(room_id, set())) == 0:
+                    room_manager.destroy_room(room_id)
+            
+            asyncio.create_task(delayed_destroy())
