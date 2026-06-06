@@ -9,6 +9,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 export function Room() {
   const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+  const getFileUrl = (url) => url.startsWith('http') ? url : `${apiUrl}${url}`;
   const { roomId } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
@@ -360,18 +361,18 @@ export function Room() {
                     {msg.type === 'file' ? (
                       <div className="mt-2">
                         {msg.file_type?.startsWith('image/') && (
-                          <a href={msg.file_url} target="_blank" rel="noopener noreferrer">
-                            <img src={msg.file_url} alt={msg.file_name} className="max-w-[200px] sm:max-w-xs rounded-lg border border-white/10 hover:opacity-90 transition-opacity" />
+                          <a href={getFileUrl(msg.file_url)} target="_blank" rel="noopener noreferrer">
+                            <img src={getFileUrl(msg.file_url)} alt={msg.file_name} className="max-w-[200px] sm:max-w-xs rounded-lg border border-white/10 hover:opacity-90 transition-opacity" />
                           </a>
                         )}
                         {msg.file_type?.startsWith('video/') && (
-                          <video src={msg.file_url} controls className="max-w-[200px] sm:max-w-xs rounded-lg border border-white/10" />
+                          <video src={getFileUrl(msg.file_url)} controls className="max-w-[200px] sm:max-w-xs rounded-lg border border-white/10" />
                         )}
                         {msg.file_type?.startsWith('audio/') && (
-                          <audio src={msg.file_url} controls className="w-full max-w-[200px] sm:max-w-xs rounded-lg border border-white/10" />
+                          <audio src={getFileUrl(msg.file_url)} controls className="w-full max-w-[200px] sm:max-w-xs rounded-lg border border-white/10" />
                         )}
                         {!msg.file_type?.startsWith('image/') && !msg.file_type?.startsWith('video/') && !msg.file_type?.startsWith('audio/') && (
-                          <a href={msg.file_url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-colors w-max">
+                          <a href={getFileUrl(msg.file_url)} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-colors w-max">
                             <div className="p-2 bg-primary/20 rounded-lg"><FileIcon className="w-6 h-6 text-primary" /></div>
                             <div>
                               <p className="text-sm font-semibold text-white truncate max-w-[150px]">{msg.file_name}</p>

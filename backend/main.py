@@ -48,7 +48,7 @@ async def upload_file(room_id: str, file: UploadFile = File(...)):
         raise HTTPException(status_code=413, detail="File too large (max 10MB)")
 
     file_id = room_manager.save_file(room_id, file.filename, file.content_type, content)
-    file_url = f"http://localhost:8000/api/files/{room_id}/{file_id}"
+    file_url = f"/api/files/{room_id}/{file_id}"
     
     return {
         "file_id": file_id,
