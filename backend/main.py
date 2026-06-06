@@ -86,9 +86,13 @@ class ConnectionManager:
 
     async def broadcast(self, room_id: str, message: str, exclude_client: str = None):
         if room_id in self.active_connections:
-            for cid, connection in self.active_connections[room_id].items():
+            connections = list(self.active_connections[room_id].items())
+            for cid, connection in connections:
                 if cid != exclude_client:
-                    await connection.send_text(message)
+                    try:
+                        await connection.send_text(message)
+                    except Exception:
+                        pass
 
 manager = ConnectionManager()
 
@@ -182,6 +186,10 @@ async def websocket_endpoint(websocket: WebSocket, room_id: str, client_id: str)
                         }))
 
     except WebSocketDisconnect:
+        pass
+    except Exception as e:
+        print(f"WebSocket error: {e}")
+    finally:
         manager.disconnect(room_id, client_id)
         room_manager.remove_client(room_id, client_id)
         
