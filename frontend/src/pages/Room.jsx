@@ -54,15 +54,18 @@ export function Room() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  useEffect(() => {
+    if (localVideoRef.current && localStream) {
+      localVideoRef.current.srcObject = localStream;
+    }
+  }, [localStream, hasActiveCalls]);
+
   const startCall = async (withVideo) => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ video: withVideo, audio: true });
       setLocalStream(stream);
       setIsVideoOff(!withVideo);
       setIsMuted(false);
-      if (localVideoRef.current) {
-        localVideoRef.current.srcObject = stream;
-      }
     } catch (err) {
       console.error("Failed to get media", err);
     }
