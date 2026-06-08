@@ -27,6 +27,9 @@ export function Room() {
   const [showAttachmentMenu, setShowAttachmentMenu] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   
+  const hasActiveCalls = Object.keys(peers).length > 0 || (localStream && !isVideoOff);
+  const totalVideos = (localStream ? 1 : 0) + Object.keys(peers).length;
+  
   const messagesEndRef = useRef(null);
   const localVideoRef = useRef(null);
   const fileInputRef = useRef(null);
@@ -118,9 +121,6 @@ export function Room() {
   const handleLeave = () => {
     navigate('/');
   };
-
-  const hasActiveCalls = Object.keys(peers).length > 0 || (localStream && !isVideoOff);
-  const totalVideos = (localStream ? 1 : 0) + Object.keys(peers).length;
 
   return (
     <>
